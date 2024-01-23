@@ -41,7 +41,7 @@ public class ConsumerCk {
                 String[] split = text.split("\\|", -1);
                 // cd_807ce734972a|d636a95ea8365351ec0f16a742dbea97|117|lc_xff|57|2|0
                 String sql = "insert into t_material_stat(uid,guid,put_id,position_id,material_id,platform,action,put_time,UPDATETIME) values(?,?,?,?,?,?,?,?,?)";
-                try (Connection connection = DriverManager.getConnection("jdbc:clickhouse://172.16.11.224:8123/db_base_log_stat", "default", "");
+                try (Connection connection = DriverManager.getConnection("jdbc:clickhouse://xxx.xxx.xxx.xxx:8123/db_base_log_stat", "xxx", "xxx");
                      PreparedStatement psmt = connection.prepareStatement(sql);) {
 
                     psmt.setString(1, split[0]);
@@ -70,7 +70,7 @@ public class ConsumerCk {
        String[] split = msg.split("\\|", -1);
        // cd_807ce734972a|d636a95ea8365351ec0f16a742dbea97|117|lc_xff|57|2|0
        String sql = "insert into t_material_stat(uid,guid,put_id,position_id,material_id,platform,action,put_time,UPDATETIME) values(?,?,?,?,?,?,?,?,?)";
-       try (Connection connection = DriverManager.getConnection("jdbc:clickhouse://172.16.11.224:8123/db_base_log_stat", "default", "");
+       try (Connection connection = DriverManager.getConnection("jdbc:clickhouse://xxx.xxx.xxx.xxx:8123/db_base_log_stat", "xxx", "xxx");
             PreparedStatement psmt = connection.prepareStatement(sql);) {
 
            psmt.setString(1, split[0]);
@@ -94,7 +94,7 @@ public class ConsumerCk {
     public void receiveMsg3(@Payload List<String> list) {
         // cd_807ce734972a|d636a95ea8365351ec0f16a742dbea97|117|lc_xff|57|2|0
         String sql = "insert into t_material_stat(uid,guid,put_id,position_id,material_id,platform,action,put_time,UPDATETIME) values(?,?,?,?,?,?,?,?,?)";
-        try (Connection connection = DriverManager.getConnection("jdbc:clickhouse://172.16.11.224:8123/db_base_log_stat", "default", "");
+        try (Connection connection = DriverManager.getConnection("jdbc:clickhouse://xxx.xxx.xxx.xxx:8123/db_base_log_stat", "xxx", "xxx");
              PreparedStatement psmt = connection.prepareStatement(sql);) {
             for(String str:list) {
                 System.out.println(new Date() + " JmsListener receiveMsg3: " + str);
