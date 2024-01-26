@@ -24,7 +24,8 @@ public class Consumer {
         Message message = null;
 
         try {
-            connectionFactory = new ActiveMQConnectionFactory("admin", "admin", "tcp://x.x.x.x:61616");
+//            connectionFactory = new ActiveMQConnectionFactory("admin", "admin", "tcp://x.x.x.x:61616");
+            connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
             connection = connectionFactory.createConnection();
             connection.start();
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);

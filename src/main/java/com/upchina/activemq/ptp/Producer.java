@@ -45,7 +45,8 @@ public class Producer {
         try {
 
             //用户名 密码 访问ActiveMQ服务的路径 结构为: 协议名://主机地址:端口号
-            connectionFactory = new ActiveMQConnectionFactory("admin", "admin", "tcp://x.x.x.x:61616");
+//            connectionFactory = new ActiveMQConnectionFactory("admin", "admin", "tcp://x.x.x.x:61616");
+            connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
             connectionFactory.setOptimizeAcknowledge(true);
 
             //创建连接
