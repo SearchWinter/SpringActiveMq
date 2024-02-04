@@ -10,6 +10,7 @@ import javax.jms.*;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 /**
  * Created by anjunli on  2024/1/23
@@ -45,8 +46,8 @@ public class Producer {
         try {
 
             //用户名 密码 访问ActiveMQ服务的路径 结构为: 协议名://主机地址:端口号
-//            connectionFactory = new ActiveMQConnectionFactory("admin", "admin", "tcp://x.x.x.x:61616");
-            connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
+            connectionFactory = new ActiveMQConnectionFactory("admin", "admin", "tcp://x.x.x.x:61616");
+//            connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
             connectionFactory.setOptimizeAcknowledge(true);
 
             //创建连接
@@ -73,6 +74,7 @@ public class Producer {
             for (int i = 0; i < 1000; i++) {
                 mProducer.send(session.createTextMessage(msg + i));
             }
+//            session.commit();
             System.out.println(System.currentTimeMillis() - start);
         } catch (Exception e) {
             e.printStackTrace();
