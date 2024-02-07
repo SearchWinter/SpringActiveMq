@@ -111,7 +111,7 @@ public class Consumer {
     //消费List<Book>数据 ------》消费失败，类型无法转换
     //List<Book> [{Author=A0, page=0}, {Author=A1, page=1}, {Author=A2, page=2}, {Author=A3, page=3}, {Author=A4, page=4}, {Author=A5, page=5}, {Author=A6, page=6}, {Author=A7, page=7}, {Author=A8, page=8}, {Author=A9, page=9}]
     //使用List<String>生产者：对象转JSON字符串，发送List<String> 消费者：从list取数据然后再将该json格式字符串转换成对象
-    @JmsListener(destination = LOG_QUEUE, concurrency = "1")
+/*    @JmsListener(destination = LOG_QUEUE, concurrency = "1")
     public void listenerReceiveMsg2(@Payload List<String> msgs, @Headers MessageHeaders headers, Message message, Session session) {
         System.out.println("listenerReceiveMsg2：" + msgs.size());
         System.out.println(msgs);
@@ -130,7 +130,7 @@ public class Consumer {
             System.out.println("listenerReceiveMsg2：" + book);
         }
 
-    }
+    }*/
 
     //消费Book数据 ------》消费成功
 /*    @JmsListener(destination = LOG_QUEUE, concurrency = "1")

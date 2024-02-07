@@ -48,3 +48,7 @@ jmsTemplate.convertAndSend(LOG_QUEUE, i+msg);
                   System.out.println("listenerReceiveMsg4: " + msg);
               }
           }
+    6、手动管理事务，能大幅度提升速度 Boolean.TRUE
+     Session session = connection.createSession(Boolean.TRUE, Session.AUTO_ACKNOWLEDGE);
+     session.commit();
+     session.rollback();

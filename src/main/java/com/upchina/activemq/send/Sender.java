@@ -6,6 +6,7 @@ import com.upchina.activemq.entity.Book;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jms.JmsProperties;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,7 @@ public class Sender {
         if (msg.isEmpty()) {
             return;
         }
+        jmsTemplate.setSessionTransacted(Boolean.FALSE);
         for (int i = 0; i < size; i++) {
             System.out.println(i);
 //            if (i % 2 != 0) {
