@@ -15,7 +15,7 @@ public class Consumer {
         //定义连接
         Connection connection = null;
         //定义会话
-        Session session = null;
+//        Session session = null;
         //定义消息目的地
         Destination destination = null;
         //定义消息生产者
@@ -28,20 +28,36 @@ public class Consumer {
 //            connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
             connection = connectionFactory.createConnection();
             connection.start();
-            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Session session = connection.createSession(Boolean.FALSE, Session.AUTO_ACKNOWLEDGE);
             destination = session.createQueue("q_test");
             mConsumer = session.createConsumer(destination);
 
             long start = System.currentTimeMillis();
-            while (true) {
+            //1、while(true)
+/*            while (true) {
                 message = mConsumer.receive();
                 String msg = ((TextMessage) message).getText();
                 System.out.println(msg);
                 System.out.println(System.currentTimeMillis()-start);
-            }
+                session.commit();
+            }*/
+            //2、MessageListener
+            mConsumer.setMessageListener(new MessageListener() {
+                @Override
+                public void onMessage(Message message) {
+                    TextMessage txtMsg = (TextMessage) message;
+                    try {
+                        System.out.println("txtMsg = " + txtMsg.getText());
+//                        session.commit();
+                    } catch (JMSException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         } catch (JMSException e) {
             e.printStackTrace();
-        } finally {
+        }
+        /*finally {
             if (mConsumer != null) {
                 try {
                     mConsumer.close();
@@ -63,6 +79,6 @@ public class Consumer {
                     e.printStackTrace();
                 }
             }
-        }
+        }*/
     }
 }
