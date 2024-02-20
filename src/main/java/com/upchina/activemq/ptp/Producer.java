@@ -46,9 +46,11 @@ public class Producer {
         try {
 
             //用户名 密码 访问ActiveMQ服务的路径 结构为: 协议名://主机地址:端口号
-            connectionFactory = new ActiveMQConnectionFactory("admin", "admin", "tcp://x.x.x.x:61616");
+            connectionFactory = new ActiveMQConnectionFactory("admin", "admin", "tcp://172.16.8.156:61616");
 //            connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
-            connectionFactory.setOptimizeAcknowledge(true);
+//            connectionFactory.setOptimizeAcknowledge(true);
+            //设置回执点，102400byte 异步发送使用
+//            connectionFactory.setProducerWindowSize(102400);
 
             //创建连接
             connection = connectionFactory.createConnection();
@@ -57,7 +59,9 @@ public class Producer {
             //启动连接
             connection.start();
             //创建会话
-            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+//            session = connection.createSession(Boolean.FALSE, Session.AUTO_ACKNOWLEDGE);
+            //使用事务
+            session = connection.createSession(Boolean.TRUE, Session.AUTO_ACKNOWLEDGE);
             //创建目的地，也就是队列名
             destination = session.createQueue("q_test");
             //创建消息生成者，该生成者与目的地绑定
@@ -74,7 +78,8 @@ public class Producer {
             for (int i = 0; i < 1000; i++) {
                 mProducer.send(session.createTextMessage(msg + i));
             }
-//            session.commit();
+            //手动提交事务
+            session.commit();
             System.out.println(System.currentTimeMillis() - start);
         } catch (Exception e) {
             e.printStackTrace();
