@@ -46,7 +46,7 @@ public class Producer {
         try {
 
             //用户名 密码 访问ActiveMQ服务的路径 结构为: 协议名://主机地址:端口号
-            connectionFactory = new ActiveMQConnectionFactory("admin", "admin", "tcp://172.16.8.156:61616");
+            connectionFactory = new ActiveMQConnectionFactory("x", "x", "tcp://x.x.x.x:61616");
 //            connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
 //            connectionFactory.setOptimizeAcknowledge(true);
             //设置回执点，102400byte 异步发送使用
@@ -77,8 +77,10 @@ public class Producer {
             long start = System.currentTimeMillis();
             for (int i = 0; i < 1000; i++) {
                 mProducer.send(session.createTextMessage(msg + i));
+                //每发送一次就手动提交事务
+//                session.commit();
             }
-            //手动提交事务
+            //最后统一提交事务
             session.commit();
             System.out.println(System.currentTimeMillis() - start);
         } catch (Exception e) {
