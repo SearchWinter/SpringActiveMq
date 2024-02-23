@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.jms.DeliveryMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.upchina.activemq.config.ActiveMQConfig.LOG_QUEUE;
-import static com.upchina.activemq.config.ActiveMQConfig.LOG_QUEUE2;
+import static com.upchina.activemq.config.ActiveMQConfig.*;
 
 /**
  * Created by anjunli on  2023/6/15
@@ -39,14 +39,19 @@ public class Sender {
         if (msg.isEmpty()) {
             return;
         }
-        jmsTemplate.setSessionTransacted(Boolean.FALSE);
+        //消息确认
+        jmsTemplate.setSessionAcknowledgeMode(JmsProperties.AcknowledgeMode.CLIENT.getMode());
+/*        //JmsTemplate 默认参数,设置为true，deliveryMode, priority, timeToLive等设置才会起作用
+        jmsTemplate.setExplicitQosEnabled(Boolean.TRUE);
+        //设为非持久化模式
+        jmsTemplate.setDeliveryMode(DeliveryMode.PERSISTENT);*/
         for (int i = 0; i < size; i++) {
             System.out.println(i);
 //            if (i % 2 != 0) {
             if (i >= 0) {
-                jmsTemplate.convertAndSend(LOG_QUEUE, msg);
+                jmsTemplate.convertAndSend(QUEUE_STRING, msg);
             } else {
-                jmsTemplate.convertAndSend(LOG_QUEUE2, msg);
+                jmsTemplate.convertAndSend(QUEUE_STRING2, msg);
             }
         }
         final long end = System.currentTimeMillis();
@@ -64,7 +69,7 @@ public class Sender {
             //不建议使用
             //不阻塞主线程，但是持久化速度并没有变快，快速关掉程序，一部分数据没有发送到队列；当数据量很大的时候，机器CPU、内存负载会很高
             executorService.execute(() -> {
-                jmsTemplate.convertAndSend(LOG_QUEUE, finalI + msg);
+                jmsTemplate.convertAndSend(QUEUE_STRING, finalI + msg);
             });
         }
         final long end = System.currentTimeMillis();
@@ -88,13 +93,13 @@ public class Sender {
             jsonArray.put(count, jsonObject);
             count++;
             if (count >= 9) {
-                jmsTemplate.convertAndSend(LOG_QUEUE, jsonArray.toString());
+                jmsTemplate.convertAndSend(QUEUE_STRING, jsonArray.toString());
                 jsonArray.clear();
                 count = 0;
             }
         }
         if (count > 0) {
-            jmsTemplate.convertAndSend(LOG_QUEUE, jsonArray.toString());
+            jmsTemplate.convertAndSend(QUEUE_STRING, jsonArray.toString());
         }
 
         final long end = System.currentTimeMillis();
@@ -112,7 +117,7 @@ public class Sender {
         for (int i = 0; i < size; i++) {
             list.add(msg);
             if (list.size() == 10) {
-                jmsTemplate.convertAndSend(LOG_QUEUE, list);
+                jmsTemplate.convertAndSend(QUEUE_LIST_STRING, list);
                 list.clear();
             }
         }
@@ -140,7 +145,7 @@ public class Sender {
             }
 
             if (bookList.size() == 10) {
-                jmsTemplate.convertAndSend(LOG_QUEUE, bookList);
+                jmsTemplate.convertAndSend(QUEUE_LIST_BOOK, bookList);
                 bookList.clear();
             }
         }
@@ -150,11 +155,11 @@ public class Sender {
     }
 
     //发送单个Book对象
-    @PostMapping("/send6")
-    public void sendMs6(int size) {
+    @PostMapping("/sendBook")
+    public void sendBook(int size) {
         final long start = System.currentTimeMillis();
         for (int i = 0; i < size; i++) {
-            jmsTemplate.convertAndSend(LOG_QUEUE, new Book("A" + i, i));
+            jmsTemplate.convertAndSend(QUEUE_BOOK, new Book("A" + i, i));
         }
         final long end = System.currentTimeMillis();
         System.out.println("start: " + start + " end: " + end + " cost: " + (end - start));

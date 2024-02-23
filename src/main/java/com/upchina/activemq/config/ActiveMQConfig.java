@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerContainerFactory;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
@@ -23,16 +24,24 @@ import org.springframework.util.ErrorHandler;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 @EnableJms
 @Configuration
 public class ActiveMQConfig {
 
-    public static final String LOG_QUEUE = "log_queue";
-    public static final String LOG_QUEUE2 = "log_queue2";
-    public static final String LOG_QUEUE_CK = "log_queue_ck";
+    public static final String QUEUE_STRING = "queue_string";
+    public static final String QUEUE_STRING2 = "queue_string2";
+    public static final String QUEUE_LIST_STRING = "queue_list_string";
+    public static final String QUEUE_CK = "queue_ck";
+    public static final String QUEUE_BOOK = "queue_book";
+    public static final String QUEUE_LIST_BOOK = "queue_list_book";
+    public static final String BROKER_URL = "vm://localhost";
+//    public static final String BROKER_URL = "tcp://localhost:61616?jms.useAsyncSend=true";
 
-    @Bean
+    //本地jvm嵌入ActiveMQ使用，与application.properties里面的外部ActiveMQ配置，选择一个使用
+   /* @Bean
     public JmsListenerContainerFactory<?> queueListenerFactory(JmsErrorHandler errorHandler) {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         factory.setMessageConverter(messageConverter());
@@ -49,6 +58,7 @@ public class ActiveMQConfig {
         }
     }
 
+    //将消息转换为TextMessage
     @Bean
     public MessageConverter messageConverter() {
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
@@ -60,7 +70,7 @@ public class ActiveMQConfig {
     @Bean(initMethod = "start", destroyMethod = "stop")
     public BrokerService broker() throws Exception {
         final BrokerService broker = new BrokerService();
-        broker.addConnector("vm://localhost");
+        broker.addConnector(BROKER_URL);
         PersistenceAdapter persistenceAdapter = new KahaDBPersistenceAdapter();
 
         Path path = Paths.get("D://kaha");
@@ -73,8 +83,15 @@ public class ActiveMQConfig {
         broker.setPersistent(true);
 //        broker.setPersistent(false);
         return broker;
-    }
+    }*/
 
+//添加受信任的包
+/*    @Bean
+    public JmsTemplate jmsTemplate() {
+        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(BROKER_URL);
+        factory.setTrustedPackages(new ArrayList(Arrays.asList("com.upchina.activemq.entity".split(","))));
+        return new JmsTemplate(factory);
+    }*/
 
     //允许请求中带特殊符号
     @Bean
@@ -84,7 +101,7 @@ public class ActiveMQConfig {
             @Override
             public void customize(Connector connector) {
                 // 配置Spring boot支持在URL请求参数中加{}特殊字符
-                connector.setProperty("relaxedPathChars","|{}");
+                connector.setProperty("relaxedPathChars", "|{}");
                 connector.setProperty("relaxedQueryChars", "|{}");
             }
         });

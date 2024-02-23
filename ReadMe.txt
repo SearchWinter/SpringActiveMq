@@ -48,7 +48,12 @@ jmsTemplate.convertAndSend(LOG_QUEUE, i+msg);
                   System.out.println("listenerReceiveMsg4: " + msg);
               }
           }
-    6、手动管理事务，能大幅度提升速度 Boolean.TRUE
+    6、使用同一个Producer一直发消息，手动管理事务，不能大幅度提升速度（除非数据发送后，统一commit一次） Boolean.TRUE；对应服务会打印更多的事务日志
      Session session = connection.createSession(Boolean.TRUE, Session.AUTO_ACKNOWLEDGE);
      session.commit();
      session.rollback();
+    7、设置prefetch值，默认1000，现象：日志重复打印ActiveMQMessageConsumer - on close, rollback duplicate:
+      ActiveMQPrefetchPolicy prefetchPolicy = new ActiveMQPrefetchPolicy();
+      prefetchPolicy.setQueuePrefetch(10);
+      ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(BROKER_URL);
+      factory.setPrefetchPolicy(prefetchPolicy);

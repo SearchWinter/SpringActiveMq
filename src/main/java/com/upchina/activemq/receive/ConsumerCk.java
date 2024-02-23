@@ -16,8 +16,7 @@ import java.sql.*;
 import java.util.Date;
 import java.util.List;
 
-import static com.upchina.activemq.config.ActiveMQConfig.LOG_QUEUE;
-import static com.upchina.activemq.config.ActiveMQConfig.LOG_QUEUE_CK;
+import static com.upchina.activemq.config.ActiveMQConfig.*;
 
 /**
  * Created by anjunli on  2023/6/15
@@ -35,7 +34,7 @@ public class ConsumerCk {
         System.out.println("receiveMsg()......");
 //        while (flag) {
         for (; ; ) {
-            Message message = jmsTemplate.receive(LOG_QUEUE_CK);
+            Message message = jmsTemplate.receive(QUEUE_CK);
             if (message instanceof TextMessage) {
                 String text = ((TextMessage) message).getText();
                 String[] split = text.split("\\|", -1);
@@ -90,7 +89,7 @@ public class ConsumerCk {
        System.out.println(new Date() + " jJmsListener receiveMsg3:: " + msg);
     }*/
 
-    @JmsListener(destination = LOG_QUEUE_CK, concurrency = "1")
+    @JmsListener(destination = QUEUE_CK, concurrency = "1")
     public void receiveMsg3(@Payload List<String> list) {
         // cd_807ce734972a|d636a95ea8365351ec0f16a742dbea97|117|lc_xff|57|2|0
         String sql = "insert into t_material_stat(uid,guid,put_id,position_id,material_id,platform,action,put_time,UPDATETIME) values(?,?,?,?,?,?,?,?,?)";
